@@ -12,6 +12,7 @@ public class BaseEnemy : MonoBehaviour
 
         if (currentHealth <= 0) 
         {
+            // AQUI E DESATIVAR ESCUDO
             gameObject.SetActive(false);
         }
     }

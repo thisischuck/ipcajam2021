@@ -23,12 +23,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3601032790980137627}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.841}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.50449914}
+  m_LocalScale: {x: 1, y: 5.381178, z: 0.59988}
   m_Children: []
-  m_Father: {fileID: 6601049931464494662}
-  m_RootOrder: 2
+  m_Father: {fileID: 6601049931237784253}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6601049930243604197
 GameObject:
@@ -103,7 +103,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 0.18583292, z: 1.667}
-  m_Children: []
+  m_Children:
+  - {fileID: 8391021746824966041}
   m_Father: {fileID: 6601049931464494662}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -189,7 +190,6 @@ Transform:
   m_Children:
   - {fileID: 6601049931237784253}
   - {fileID: 6601049930243604198}
-  - {fileID: 8391021746824966041}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -205,12 +205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d325aaa9e9c67b549acaffc0479609fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 0}
+  data: {fileID: 11400000, guid: 0d80e61a34e2dfa408e9e52d574e776f, type: 2}
   shipModel: {fileID: 6601049931237784252}
-  gunDamage: 1
-  fireRate: 0.25
-  weaponRange: 50
-  hitForce: 100
   gunEnd: {fileID: 8391021746824966041}
 --- !u!54 &6601049931464494712
 Rigidbody:

@@ -16,21 +16,10 @@ public class SpaceShipController : MonoBehaviour
     GameObject shipModel;
     private Camera cam;
 
-    float speed = 5f;
-
     /**
      *  SHOOTING
      */
 
-    [SerializeField]
-    public int gunDamage = 1;
-    [SerializeField]
-    public float fireRate = 0.25f;
-    [SerializeField]
-    public float weaponRange = 50f;
-
-    [SerializeField]
-    public float hitForce = 100f;
 
     [SerializeField]
     Transform gunEnd;
@@ -66,7 +55,7 @@ public class SpaceShipController : MonoBehaviour
         movement.x += Input.GetAxis("Horizontal");
         movement.y += Input.GetAxis("Vertical");
 
-        transform.Translate(movement * speed * Time.deltaTime, Space.Self);
+        transform.Translate(movement * data.speed * Time.deltaTime, Space.Self);
 
         Vector3 pos = cam.WorldToViewportPoint(transform.position);
         pos.x = Mathf.Clamp01(pos.x);
@@ -90,7 +79,7 @@ public class SpaceShipController : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1") && Time.time > nextFire)
         {
-            nextFire = Time.time + fireRate;
+            nextFire = Time.time + data.fireRate;
 
             StartCoroutine(ShotEffect());
             Vector3 rayOrigin = gunEnd.position;
@@ -99,7 +88,7 @@ public class SpaceShipController : MonoBehaviour
 
             laserLine.SetPosition(0, gunEnd.position);
 
-            if (Physics.Raycast(ray, out hit, weaponRange))
+            if (Physics.Raycast(ray, out hit, data.weaponRange))
             {
                 laserLine.SetPosition(1, hit.point);
 
@@ -107,17 +96,17 @@ public class SpaceShipController : MonoBehaviour
 
                 if (health != null)
                 {
-                    health.Damage(gunDamage);
+                    health.Damage(data.gunDamage);
                 }
 
-                if (hit.rigidbody != null)
+                /*if (hit.rigidbody != null)
                 {
-                    hit.rigidbody.AddForce(-hit.normal * hitForce);
-                }
+                    hit.rigidbody.AddForce(-hit.normal * data.hitForce);
+                }*/
             }
             else
             {
-                laserLine.SetPosition(1, rayOrigin + (cam.transform.forward * weaponRange));
+                laserLine.SetPosition(1, rayOrigin + (cam.transform.forward * data.weaponRange));
             }
         }
     }
