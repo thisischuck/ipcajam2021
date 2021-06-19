@@ -9,9 +9,7 @@ public class SchipRailSystem : MonoBehaviour
 
     Rigidbody rb;
 
-    float speed = 0;
-
-    float maxSpeed = 2f;
+    float speed = 3f;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,27 +28,12 @@ public class SchipRailSystem : MonoBehaviour
         if (rail.Count > 0)
         {
             //fazer o lerp em funçao do tempo
-            if (Mathf.Abs(speed) < maxSpeed)
-            {
-                Debug.Log((rail.Peek().position - transform.position).normalized);
-                rb.AddForce((rail.Peek().position - transform.position).normalized,ForceMode.Impulse);
-            }
-            else
-            {
-                rb.velocity = rb.velocity - rb.velocity/2;
-            }
-            speed = rb.velocity.x + rb.velocity.y + rb.velocity.z;
-            //Debug.Log(rb.velocity + " : " + speed);
-            //transform.position = Vector3.Lerp(transform.position, rail.Peek().position,.5f);
-            //transform.position = rail.Peek().position;
-            //Debug.Log(rail.Count);
-            //Debug.Log(transform.position + "  " + rail.Peek().position + "  " + Vector3.Distance(transform.position,rail.Peek().position));
+            rb.velocity = (rail.Peek().position - transform.position).normalized * speed;
+
             if (Vector3.Distance(transform.position,rail.Peek().position) <= 0.5f)
             {
-                rb.velocity = Vector3.zero;
                 RemoveFirstPoint();
-                Debug.Log("Remove point");
-                
+                Debug.Log("Remove point");  
             }
             
         }
