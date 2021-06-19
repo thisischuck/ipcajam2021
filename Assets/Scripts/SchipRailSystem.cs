@@ -6,8 +6,9 @@ public class SchipRailSystem : MonoBehaviour
 {
     [SerializeField] List<Transform> initialValues = new List<Transform>();
     [SerializeField] Queue<Transform> rail;
-
+    [SerializeField] Transform Ship;
     Rigidbody rb;
+
 
     float speed = 3f;
     // Start is called before the first frame update
@@ -27,13 +28,17 @@ public class SchipRailSystem : MonoBehaviour
     {
         if (rail.Count > 0)
         {
-            //fazer o lerp em funçao do tempo
+
             rb.velocity = (rail.Peek().position - transform.position).normalized * speed;
 
-            if (Vector3.Distance(transform.position,rail.Peek().position) <= 0.5f)
+            if (Vector3.Distance(Ship.position,rail.Peek().position) <= 1.5f)
             {
+                Debug.Log("Remove point");
                 RemoveFirstPoint();
-                Debug.Log("Remove point");  
+                Vector3 targetDirection = rail.Peek().position - Ship.position;
+                float angle = Vector3.SignedAngle(targetDirection,Ship.forward,Vector3.up); 
+                //fazer um lerp nisto
+                transform.RotateAround(Ship.position,Vector3.up,-angle);               
             }
             
         }
