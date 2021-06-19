@@ -148,7 +148,11 @@ Shader "Test/Complex Lit"
                 UNITY_TRANSFER_INSTANCE_ID(input, output);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-                float4 uva = float4(input.texcoord.xy, 0,0) + float4(0, -_Time.y/5 ,0,0);
+                float4 uva = float4(input.texcoord.xy, 0,0) + 
+                    float4(0,
+                        - _Time.y /5 ,
+                        0,
+                        0);
                 float4 a = tex2Dlod(_MoveMap, uva);
 
                 input.positionOS += input.normalOS.xyzx * a.r / 10;
