@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,19 +28,18 @@ public class SpaceShipController : MonoBehaviour
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
 
     private AudioSource gunAudio;
-    private LineRenderer laserLine;
     private float nextFire;
 
     /**
      * Barrel Roll
      */
+    
     bool doingBarrelRoll = false;
 
 
     void Start()
     {
         cam = Camera.main;
-        laserLine = GetComponent<LineRenderer>();
         gunAudio = GetComponent<AudioSource>();
     }
 
@@ -62,6 +62,14 @@ public class SpaceShipController : MonoBehaviour
         {
             doingBarrelRoll = true;
             StartCoroutine(Rotate(data.barrelRollTime));
+            ReleaseTheGluedVirus();
+        }
+    }
+
+    void ReleaseTheGluedVirus() {
+        foreach (var enemy in GetComponentsInChildren<BaseEnemy>())
+        {
+            enemy.Release();
         }
     }
 
@@ -111,7 +119,7 @@ public class SpaceShipController : MonoBehaviour
         Vector3 mouse = Input.mousePosition;
         Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(mouse.x, mouse.y, 9f));
         Vector3 forward = mouseWorld - transform.position;
-        shipModel.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
+        transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
     }
 
     void ShootUpdate()
@@ -120,13 +128,10 @@ public class SpaceShipController : MonoBehaviour
         {
             nextFire = Time.time + data.fireRate;
 
-            StartCoroutine(ShotEffect());
+            gunAudio.Play();
             Vector3 rayOrigin = gunEnd.position;
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-
-            laserLine.SetPosition(0, gunEnd.position);
-
 
             if (Physics.Raycast(ray, out hit, data.weaponRange))
             {
@@ -144,24 +149,12 @@ public class SpaceShipController : MonoBehaviour
                     var dir  = (hit.point - gunEnd.transform.position).normalized;
                     bullet.GetComponent<Rigidbody>().velocity = dir * data.bulletSpeed;
                 }
-
-
-                laserLine.SetPosition(1, hit.point);
             }
             else
             {
-                laserLine.SetPosition(1, rayOrigin + (cam.transform.forward * data.weaponRange));
+                // TODO ADD SOMETHING HERE ? IS THIS EVEN POSSIBLE 
             }
         }
     }
 
-    private IEnumerator ShotEffect()
-    {
-        gunAudio.Play();
-
-        laserLine.enabled = true;
-
-        yield return shotDuration;
-        laserLine.enabled = false;
-    }
 }

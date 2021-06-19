@@ -13,6 +13,6 @@ public class CameraMoveForward : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(0, 0, 0.002f, Space.Self);
+        transform.Translate(0, 0, 2f * Time.deltaTime, Space.Self);
     }
 }
