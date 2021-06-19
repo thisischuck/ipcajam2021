@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
 {
-    [SerializeField] AnimationCurve animationCurve;
+    [SerializeField] 
+    GameObject mesh;
+
+    [SerializeField] 
+    AnimationCurve animationCurve;
 
     private float curveDeltaTime = 0.0f;
+
     private bool isNotInCollisionWithPlayer = true;
-    public int currentHealth = 3;
+    
+    [SerializeField]
+    int currentHealth = 3;
+
+    private bool isSheildActive = true;
 
     private Transform _initialParent;
 
@@ -39,8 +48,8 @@ public class BaseEnemy : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            // AQUI E DESATIVAR ESCUDO
-            gameObject.SetActive(false);
+            isSheildActive = false;
+            mesh.GetComponent<Renderer>().material.color = Color.red;
         }
     }
 
@@ -75,5 +84,7 @@ public class BaseEnemy : MonoBehaviour
         GetComponent<SphereCollider>().enabled = true;
         GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
 
+        yield return new WaitForSeconds(3f);
+        gameObject.active = false;
     }
 }
