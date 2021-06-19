@@ -34,7 +34,7 @@ public class SpaceShipController : MonoBehaviour
      * Barrel Roll
      */
     bool doingBarrelRoll = false;
-    
+
 
     void Start()
     {
@@ -49,25 +49,28 @@ public class SpaceShipController : MonoBehaviour
         DoTheBarrelRoll();
         MovementUpdate();
 
-        if(!doingBarrelRoll) {
+        if (!doingBarrelRoll)
+        {
             LookAtUpdate();
             ShootUpdate();
         }
     }
 
-    void DoTheBarrelRoll() {
-        if(doingBarrelRoll == false && Input.GetButtonDown("Jump")) {
+    void DoTheBarrelRoll()
+    {
+        if (doingBarrelRoll == false && Input.GetButtonDown("Jump"))
+        {
             doingBarrelRoll = true;
             StartCoroutine(Rotate(data.barrelRollTime));
-        }   
+        }
     }
-    
-      IEnumerator Rotate(float duration)
+
+    IEnumerator Rotate(float duration)
     {
         Quaternion startRot = transform.rotation;
 
         float t = 0.0f;
-        while ( t  < duration )
+        while (t < duration)
         {
             t += Time.deltaTime;
             transform.rotation = startRot * Quaternion.AngleAxis(t / duration * 360f, Vector3.forward);
@@ -77,7 +80,8 @@ public class SpaceShipController : MonoBehaviour
         doingBarrelRoll = false;
     }
 
-    void MovementUpdate() {
+    void MovementUpdate()
+    {
 
         /**
          * Movement 
@@ -87,7 +91,10 @@ public class SpaceShipController : MonoBehaviour
         movement.x += Input.GetAxis("Horizontal");
         movement.y += Input.GetAxis("Vertical");
 
-        transform.Translate(movement * data.speed * Time.deltaTime, Space.Self);
+        //transform.Translate(movement * data.speed * Time.deltaTime, Space.Self);
+        Vector3 velocity = new Vector3(movement.x * data.speed, movement.y * data.speed, 0f);
+        GetComponent<Rigidbody>().velocity = velocity;
+
 
         Vector3 pos = cam.WorldToViewportPoint(transform.position);
         pos.x = Mathf.Clamp01(pos.x);
@@ -95,13 +102,14 @@ public class SpaceShipController : MonoBehaviour
         transform.position = cam.ViewportToWorldPoint(pos);
 
     }
-    void LookAtUpdate()  {
+    void LookAtUpdate()
+    {
 
         /**
          * Rotation
         */
         Vector3 mouse = Input.mousePosition;
-        Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(mouse.x,mouse.y,9f));
+        Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(mouse.x, mouse.y, 9f));
         Vector3 forward = mouseWorld - transform.position;
         shipModel.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
     }
@@ -119,21 +127,26 @@ public class SpaceShipController : MonoBehaviour
 
             laserLine.SetPosition(0, gunEnd.position);
 
+
             if (Physics.Raycast(ray, out hit, data.weaponRange))
             {
-                laserLine.SetPosition(1, hit.point);
 
-                BaseEnemy health = hit.collider.GetComponent<BaseEnemy>();
 
-                if (health != null)
+                GameObject bullet = BulletPooling.SharedInstance.GetPooledObject();
+                if (bullet != null)
                 {
-                    health.Damage(data.gunDamage);
+                    bullet.transform.position = gunEnd.transform.position;
+                    bullet.transform.rotation = gunEnd.transform.rotation;
+                    bullet.GetComponent<BulletController>().SetGunDamage(data.gunDamage);
+                    bullet.GetComponent<BulletController>().RestartCountdown();
+                    bullet.SetActive(true);
+
+                    var dir  = (hit.point - gunEnd.transform.position).normalized;
+                    bullet.GetComponent<Rigidbody>().velocity = dir * data.bulletSpeed;
                 }
 
-                /*if (hit.rigidbody != null)
-                {
-                    hit.rigidbody.AddForce(-hit.normal * data.hitForce);
-                }*/
+
+                laserLine.SetPosition(1, hit.point);
             }
             else
             {
