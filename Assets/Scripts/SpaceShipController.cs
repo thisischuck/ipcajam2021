@@ -30,6 +30,11 @@ public class SpaceShipController : MonoBehaviour
     private LineRenderer laserLine;
     private float nextFire;
 
+    /**
+     * Barrel Roll
+     */
+    bool doingBarrelRoll = false;
+    
 
     void Start()
     {
@@ -41,8 +46,35 @@ public class SpaceShipController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DoTheBarrelRoll();
         MovementUpdate();
-        ShootUpdate();
+
+        if(!doingBarrelRoll) {
+            LookAtUpdate();
+            ShootUpdate();
+        }
+    }
+
+    void DoTheBarrelRoll() {
+        if(doingBarrelRoll == false && Input.GetButtonDown("Jump")) {
+            doingBarrelRoll = true;
+            StartCoroutine(Rotate(data.barrelRollTime));
+        }   
+    }
+    
+      IEnumerator Rotate(float duration)
+    {
+        Quaternion startRot = transform.rotation;
+
+        float t = 0.0f;
+        while ( t  < duration )
+        {
+            t += Time.deltaTime;
+            transform.rotation = startRot * Quaternion.AngleAxis(t / duration * 360f, Vector3.forward);
+            yield return null;
+        }
+        transform.rotation = startRot;
+        doingBarrelRoll = false;
     }
 
     void MovementUpdate() {
@@ -62,15 +94,14 @@ public class SpaceShipController : MonoBehaviour
         pos.y = Mathf.Clamp01(pos.y);
         transform.position = cam.ViewportToWorldPoint(pos);
 
+    }
+    void LookAtUpdate()  {
+
         /**
          * Rotation
         */
-
         Vector3 mouse = Input.mousePosition;
-        Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(
-                                                        mouse.x,
-                                                        mouse.y,
-                                                        9f));
+        Vector3 mouseWorld = cam.ScreenToWorldPoint(new Vector3(mouse.x,mouse.y,9f));
         Vector3 forward = mouseWorld - transform.position;
         shipModel.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
     }

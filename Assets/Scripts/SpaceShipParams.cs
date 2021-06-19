@@ -18,4 +18,9 @@ public class SpaceShipParams : ScriptableObject
     public float weaponRange = 50f;
 
     public float hitForce = 100f;   
+
+    /**
+     * Barrel Roll
+     */
+    public float barrelRollTime = 1f;
 }

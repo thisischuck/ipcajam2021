@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14f3be067adf6094bb4a3de5c9c9262b, type: 3}
-  m_Name: ShipData
+  m_Name: Data
   m_EditorClassIdentifier: 
   speed: 5
   gunDamage: 1
