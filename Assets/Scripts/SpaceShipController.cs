@@ -33,8 +33,15 @@ public class SpaceShipController : MonoBehaviour
     /**
      * Barrel Roll
      */
-    
+
     bool doingBarrelRoll = false;
+
+
+    /**
+     * LIFE SYSTEM
+     */
+    float nextLifeRecount = 1f;
+    float lifeRecountPeriod = 1f;
 
 
     void Start()
@@ -54,6 +61,34 @@ public class SpaceShipController : MonoBehaviour
             LookAtUpdate();
             ShootUpdate();
         }
+
+        LifeUpdate();
+    }
+
+    void LifeUpdate()
+    {
+        Debug.Log(data.shipLife);
+        if (Time.time > nextLifeRecount)
+        {
+            nextLifeRecount += lifeRecountPeriod;
+
+            // 1 - COUNT ENEMIES GLUED TO SHIP
+            var enemies = GetEnymiesGluedToShip();
+
+            // 2 - if bigger than 0 remove X for each enemy
+            if (enemies.Length > 0)
+            {
+                foreach (var enemy in GetEnymiesGluedToShip())
+                {
+                    RemoveLife(enemy.DamageTheShipValue());
+                }
+            }
+            else
+            {
+                // 3 - else add life to th ship
+                AddLife(data.lifeRecovery);
+            }
+        }
     }
 
     void DoTheBarrelRoll()
@@ -66,8 +101,14 @@ public class SpaceShipController : MonoBehaviour
         }
     }
 
-    void ReleaseTheGluedVirus() {
-        foreach (var enemy in GetComponentsInChildren<BaseEnemy>())
+    BaseEnemy[] GetEnymiesGluedToShip()
+    {
+        return GetComponentsInChildren<BaseEnemy>();
+    }
+
+    void ReleaseTheGluedVirus()
+    {
+        foreach (var enemy in GetEnymiesGluedToShip())
         {
             enemy.Release();
         }
@@ -146,7 +187,7 @@ public class SpaceShipController : MonoBehaviour
                     bullet.GetComponent<BulletController>().RestartCountdown();
                     bullet.SetActive(true);
 
-                    var dir  = (hit.point - gunEnd.transform.position).normalized;
+                    var dir = (hit.point - gunEnd.transform.position).normalized;
                     bullet.GetComponent<Rigidbody>().velocity = dir * data.bulletSpeed;
                 }
             }
@@ -157,4 +198,21 @@ public class SpaceShipController : MonoBehaviour
         }
     }
 
+
+    public void RemoveLife(float totalDamage)
+    {
+        data.shipLife -= totalDamage;
+        if (data.shipLife < 0f)
+        {
+            // TODO YOU LOSE 
+        }
+    }
+    public void AddLife(float lifeRecovery)
+    {
+        data.shipLife += lifeRecovery;
+        if (data.shipLife > data.maxShipLife)
+        {
+            data.shipLife = data.maxShipLife;
+        }
+    }
 }
