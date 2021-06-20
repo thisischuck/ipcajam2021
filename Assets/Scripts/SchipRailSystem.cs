@@ -28,14 +28,14 @@ public class SchipRailSystem : MonoBehaviour
     {
         if (rail.Count > 0)
         {
-            if (rail.Count == 1)
+            /*if (rail.Count == 1)
             {
                 moduleManager.GenerateRandomModule();
                 foreach (var railPoint in moduleManager.nextModulePoints())
                 {
                     rail.Enqueue(railPoint);
                 }
-            }
+            }*/
             var CurPos = transform.position + transform.forward*distanceFromShip;
             var ShipPos = new Vector2(CurPos.x,CurPos.z);
             var TargPos = new Vector2(rail.Peek().position.x,rail.Peek().position.z);
@@ -46,11 +46,33 @@ public class SchipRailSystem : MonoBehaviour
                 Vector3 targetDirection = rail.Peek().position - Ship.position;
                 float angle = Vector3.SignedAngle(targetDirection,Ship.forward,Vector3.up); 
                 //fazer um lerp nisto
-                transform.RotateAround(Ship.position,Vector3.up,-angle);     
+                StartCoroutine(RotateSmooth(Ship.position,angle));
+                //transform.RotateAround(Ship.position,Vector3.up,-angle);     
             }
             transform.Translate((rail.Peek().position - transform.position).normalized * speed * Time.deltaTime, Space.World);        
             
         }
+        else
+        {
+            moduleManager.GenerateRandomModule();
+            foreach (var railPoint in moduleManager.nextModulePoints())
+            {
+                rail.Enqueue(railPoint);
+            }
+        }
+    }
+
+    IEnumerator RotateSmooth(Vector3 position,float targetAngle){
+        float angle = 0f;
+        while (Mathf.Abs(angle)< Mathf.Abs(targetAngle))
+        {
+            angle += targetAngle/30;
+            transform.RotateAround(position,Vector3.up,-targetAngle/30);
+            yield return new WaitForSeconds(.05f);
+        }
+       
+
+        
     }
 
     void RemoveFirstPoint(){
@@ -59,7 +81,4 @@ public class SchipRailSystem : MonoBehaviour
 
     //call module manager to give the queue of railpoints 
     //corresponding to the side of the fork the player chose
-    private void OnTriggerEnter(Collider other) {
-    
-    }
 }

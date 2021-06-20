@@ -176,11 +176,10 @@ public class SpaceShipController : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, data.weaponRange))
             {
-
-
                 GameObject bullet = BulletPooling.SharedInstance.GetPooledObject();
                 if (bullet != null)
                 {
+                    Debug.Log("A");
                     bullet.transform.position = gunEnd.transform.position;
                     bullet.transform.rotation = gunEnd.transform.rotation;
                     bullet.GetComponent<BulletController>().SetGunDamage(data.gunDamage);

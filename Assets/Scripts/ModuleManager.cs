@@ -25,9 +25,14 @@ public class ModuleManager : MonoBehaviour
 
     public void GenerateRandomModule(){
         //meter o novo modulo na posicao certa
-        var randModule = Instantiate(modulePrefabs[Random.Range(0,2)].gameObject,modules.Peek().transform.position,modules.Peek().transform.rotation);
+        var randModule = Instantiate(modulePrefabs[Random.Range(0,2)].gameObject,
+        modules.Peek().railPoints[modules.Peek().railPoints.Count-1].position,
+        modules.Peek().railPoints[modules.Peek().railPoints.Count-1].rotation);
+
         modules.Enqueue(randModule.GetComponent<Module>());
     }
+    
+    //podia retornar a Lista diretamente
     public Queue<Transform> nextModulePoints(){
         var railPoints = new Queue<Transform>();
         foreach (var railPoint in modules.Peek().railPoints)

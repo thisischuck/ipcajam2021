@@ -8,7 +8,7 @@ public class MenuController : MonoBehaviour
 {
     public GameObject MainMenu;
     public GameObject HUD;
-    public VolumeProfile camera;
+    public VolumeProfile vp;
     public bool playing;
     public float scale;
     DepthOfField a;
@@ -17,7 +17,7 @@ public class MenuController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        a = (DepthOfField)camera.components.Find(x => x.GetType() == typeof(DepthOfField));
+        a = (DepthOfField)vp.components.Find(x => x.GetType() == typeof(DepthOfField));
         a.focusDistance.Override(0.1f);
     }
 

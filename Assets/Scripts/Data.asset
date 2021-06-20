@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f3be067adf6094bb4a3de5c9c9262b, type: 3}
   m_Name: Data
   m_EditorClassIdentifier: 
+  maxShipLife: 100
+  shipLife: 100
+  lifeRecovery: 3
   speed: 5
   gunDamage: 1
   fireRate: 0.25
   weaponRange: 50
   hitForce: 100
-  bulletSpeed: 1
+  bulletSpeed: 50
   barrelRollTime: 1

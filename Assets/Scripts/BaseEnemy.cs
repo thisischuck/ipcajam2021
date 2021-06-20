@@ -38,7 +38,7 @@ public class BaseEnemy : MonoBehaviour
         {
             Vector3 currentPosition = transform.position;
             curveDeltaTime += Time.deltaTime;
-            currentPosition.y = animationCurve.Evaluate(curveDeltaTime);
+            currentPosition.y += animationCurve.Evaluate(curveDeltaTime);
 
             transform.position = currentPosition;
 
@@ -109,7 +109,7 @@ public class BaseEnemy : MonoBehaviour
         GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
 
         yield return new WaitForSeconds(3f);
-        gameObject.active = false;
+        gameObject.SetActive(false);
     }
 
     void ExplodeVirus()
@@ -118,6 +118,7 @@ public class BaseEnemy : MonoBehaviour
         exp.Play();
         GetComponent<AudioSource>().Play();
         GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
-        Destroy(gameObject, exp.main.duration);
+        //Destroy(gameObject, exp.main.duration);
+        gameObject.SetActive(false);
     }
 }
