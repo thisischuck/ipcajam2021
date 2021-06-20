@@ -10,6 +10,7 @@ Shader "Test/Complex Lit"
 
         [MainTexture] _BaseMap("Albedo", 2D) = "white" {}
         _MoveMap("Move", 2D) = "white" {}
+        _MoveMap_Scale("Scale", Float) = 1.0
         [MainColor] _BaseColor("Color", Color) = (1,1,1,1)
 
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
@@ -136,6 +137,7 @@ Shader "Test/Complex Lit"
             #pragma fragment LitPassFragment
 
             sampler2D _MoveMap;
+            float _MoveMap_Scale;
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitForwardPass.hlsl"
@@ -154,7 +156,7 @@ Shader "Test/Complex Lit"
                 //1/(1+exp(-kx))^a
                 float v = 1 / (1 + exp(-_CosTime.w));
                 //float v = -3*(a.r * a.r ) * _CosTime.z;
-                float scale = 3 * a.r;
+                float scale = _MoveMap_Scale * a.r;
                 /*float v = 0;
                 if(r > 120)
                     v = a.r * _CosTime.z;*/
