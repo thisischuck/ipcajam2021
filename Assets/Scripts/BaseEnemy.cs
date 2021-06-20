@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
 {
-    [SerializeField] 
+    [SerializeField]
     GameObject mesh;
 
-    [SerializeField] 
+    [SerializeField]
     AnimationCurve animationCurve;
 
     private float curveDeltaTime = 0.0f;
 
     private bool isNotInCollisionWithPlayer = true;
-    
+
+
+
+    [SerializeField]
+    float damageToShip = 5f;
+
+
     [SerializeField]
     int currentHealth = 3;
 
@@ -33,10 +39,11 @@ public class BaseEnemy : MonoBehaviour
             Vector3 currentPosition = transform.position;
             curveDeltaTime += Time.deltaTime;
             currentPosition.y = animationCurve.Evaluate(curveDeltaTime);
-            
+
             transform.position = currentPosition;
 
-            if(curveDeltaTime >= 1f) {
+            if (curveDeltaTime >= 1f)
+            {
                 curveDeltaTime = 0.0f;
             }
         }
@@ -53,16 +60,33 @@ public class BaseEnemy : MonoBehaviour
         }
     }
 
+    public float DamageTheShipValue()
+    {
+        return damageToShip;
+    }
+
     void OnCollisionEnter(Collision collided)
     {
         if (collided.gameObject.tag == "Player" && isNotInCollisionWithPlayer)
         {
             isNotInCollisionWithPlayer = false;
-            //GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-            //GetComponent<Rigidbody>().isKinematic = true;
-            GetComponent<SphereCollider>().enabled = false;
-            transform.SetParent(collided.gameObject.transform);
 
+            if (isSheildActive)
+            {
+                var ship = collided.collider.transform.parent.GetComponent<SpaceShipController>();
+                if (ship)
+                {
+                    ship.RemoveLife(damageToShip * 5);
+                    ExplodeVirus();
+                }
+            }
+            else
+            {
+                //GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+                //GetComponent<Rigidbody>().isKinematic = true;
+                GetComponent<SphereCollider>().enabled = false;
+                transform.SetParent(collided.gameObject.transform);
+            }
         }
     }
 
@@ -86,5 +110,14 @@ public class BaseEnemy : MonoBehaviour
 
         yield return new WaitForSeconds(3f);
         gameObject.active = false;
+    }
+
+    void ExplodeVirus()
+    {
+        ParticleSystem exp = GetComponent<ParticleSystem>();
+        exp.Play();
+        GetComponent<AudioSource>().Play();
+        GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
+        Destroy(gameObject, exp.main.duration);
     }
 }

@@ -3,6 +3,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/SpaceShipParams", order = 1)]
 public class SpaceShipParams : ScriptableObject
 {
+
+    /**
+     * SHIP
+     */
+     public float maxShipLife = 100f;
+    public float shipLife = 100f;
+
+    public float lifeRecovery = 3f;
+
     /**
      * Movement
      */
