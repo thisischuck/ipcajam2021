@@ -4,59 +4,62 @@ using UnityEngine;
 
 public class SchipRailSystem : MonoBehaviour
 {
-    [SerializeField] List<Transform> initialValues = new List<Transform>();
     [SerializeField] Queue<Transform> rail;
-
+    [SerializeField] Transform Ship;
+    [SerializeField] ModuleManager moduleManager;
     Rigidbody rb;
-
-    float speed = 0;
-
-    float maxSpeed = 2f;
+    float speed = 3f;
+    float distanceFromShip = 0;
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
         rail = new Queue<Transform>();
-        foreach (var position in initialValues)
+        foreach (var railPoint in moduleManager.nextModulePoints())
         {
-            rail.Enqueue(position);
+            rail.Enqueue(railPoint);
         }
-        
+
+        distanceFromShip = Vector3.Distance(transform.position,Ship.position);
+        transform.Translate((rail.Peek().position - transform.position).normalized * speed * Time.deltaTime, Space.World); 
     }
 
-    // Update is called once per frame
+    //fazer logica dos forks
     void Update()
     {
         if (rail.Count > 0)
         {
-            //fazer o lerp em funçao do tempo
-            if (Mathf.Abs(speed) < maxSpeed)
+            if (rail.Count == 1)
             {
-                Debug.Log((rail.Peek().position - transform.position).normalized);
-                rb.AddForce((rail.Peek().position - transform.position).normalized,ForceMode.Impulse);
+                moduleManager.GenerateRandomModule();
+                foreach (var railPoint in moduleManager.nextModulePoints())
+                {
+                    rail.Enqueue(railPoint);
+                }
             }
-            else
+            var CurPos = transform.position + transform.forward*distanceFromShip;
+            var ShipPos = new Vector2(CurPos.x,CurPos.z);
+            var TargPos = new Vector2(rail.Peek().position.x,rail.Peek().position.z);
+            if (Vector2.Distance(ShipPos,TargPos) <= 1f)
             {
-                rb.velocity = rb.velocity - rb.velocity/2;
-            }
-            speed = rb.velocity.x + rb.velocity.y + rb.velocity.z;
-            //Debug.Log(rb.velocity + " : " + speed);
-            //transform.position = Vector3.Lerp(transform.position, rail.Peek().position,.5f);
-            //transform.position = rail.Peek().position;
-            //Debug.Log(rail.Count);
-            //Debug.Log(transform.position + "  " + rail.Peek().position + "  " + Vector3.Distance(transform.position,rail.Peek().position));
-            if (Vector3.Distance(transform.position,rail.Peek().position) <= 0.5f)
-            {
-                rb.velocity = Vector3.zero;
-                RemoveFirstPoint();
                 Debug.Log("Remove point");
-                
+                RemoveFirstPoint();
+                Vector3 targetDirection = rail.Peek().position - Ship.position;
+                float angle = Vector3.SignedAngle(targetDirection,Ship.forward,Vector3.up); 
+                //fazer um lerp nisto
+                transform.RotateAround(Ship.position,Vector3.up,-angle);     
             }
+            transform.Translate((rail.Peek().position - transform.position).normalized * speed * Time.deltaTime, Space.World);        
             
         }
     }
 
     void RemoveFirstPoint(){
         rail.Dequeue();
+    }
+
+    //call module manager to give the queue of railpoints 
+    //corresponding to the side of the fork the player chose
+    private void OnTriggerEnter(Collider other) {
+    
     }
 }
