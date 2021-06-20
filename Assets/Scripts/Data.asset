@@ -17,3 +17,5 @@ MonoBehaviour:
   fireRate: 0.25
   weaponRange: 50
   hitForce: 100
+  bulletSpeed: 1
+  barrelRollTime: 1
