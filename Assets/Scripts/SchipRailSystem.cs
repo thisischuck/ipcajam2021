@@ -28,14 +28,14 @@ public class SchipRailSystem : MonoBehaviour
     {
         if (rail.Count > 0)
         {
-            if (rail.Count == 1)
+            /*if (rail.Count == 1)
             {
                 moduleManager.GenerateRandomModule();
                 foreach (var railPoint in moduleManager.nextModulePoints())
                 {
                     rail.Enqueue(railPoint);
                 }
-            }
+            }*/
             var CurPos = transform.position + transform.forward*distanceFromShip;
             var ShipPos = new Vector2(CurPos.x,CurPos.z);
             var TargPos = new Vector2(rail.Peek().position.x,rail.Peek().position.z);
@@ -51,6 +51,14 @@ public class SchipRailSystem : MonoBehaviour
             transform.Translate((rail.Peek().position - transform.position).normalized * speed * Time.deltaTime, Space.World);        
             
         }
+        else
+        {
+            moduleManager.GenerateRandomModule();
+            foreach (var railPoint in moduleManager.nextModulePoints())
+            {
+                rail.Enqueue(railPoint);
+            }
+        }
     }
 
     void RemoveFirstPoint(){
@@ -59,7 +67,4 @@ public class SchipRailSystem : MonoBehaviour
 
     //call module manager to give the queue of railpoints 
     //corresponding to the side of the fork the player chose
-    private void OnTriggerEnter(Collider other) {
-    
-    }
 }
