@@ -56,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MoveMap:
-        m_Texture: {fileID: 2800000, guid: b2e7211933982b646a788833a7ccef10, type: 3}
+        m_Texture: {fileID: 2800000, guid: 875a37da39e194e4db5eef9821520f32, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MoveTex:
